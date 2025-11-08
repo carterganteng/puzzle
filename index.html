@@ -218,51 +218,84 @@
             padding: 25px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
+            position: relative;
         }
 
-        .puzzle-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2px;
-            margin: 0 auto;
-            width: 300px;
-            height: 300px;
-            border: 3px solid #a8d8ea;
+        .puzzle-board {
+            width: 100%;
+            height: 400px;
+            background-color: #fff0f5;
             border-radius: 15px;
-            background: rgba(168, 216, 234, 0.2);
-            touch-action: none;
+            border: 3px dashed #ffb7d5;
+            position: relative;
+            overflow: hidden;
+            margin: 0 auto;
+            max-width: 400px;
         }
 
         .puzzle-piece {
-            width: 100%;
-            height: 100%;
-            background-color: #e0f7ff;
-            border: 1px solid #a8d8ea;
+            position: absolute;
+            background-size: 300% 300%;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             cursor: grab;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            user-select: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            z-index: 1;
+            border: 2px solid #a8d8ea;
         }
 
-        .puzzle-piece img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            pointer-events: none;
+        .puzzle-piece:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            z-index: 2;
         }
 
         .puzzle-piece.dragging {
+            cursor: grabbing;
             transform: scale(1.05);
-            z-index: 100;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            z-index: 3;
             border-color: #ffb6c1;
         }
 
-        .puzzle-piece.empty {
-            background-color: transparent;
-            border: 1px dashed #a8d8ea;
+        .puzzle-piece.correct {
             cursor: default;
+            box-shadow: 0 0 0 3px #a78bfa;
+            animation: gentlePulse 2s infinite;
+        }
+
+        @keyframes gentlePulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .completion-message {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 15px;
+            z-index: 10;
+        }
+
+        .completion-message h2 {
+            color: #ff85a2;
+            font-size: 2rem;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 0 #ffb6c1;
+        }
+
+        .completion-message p {
+            font-size: 1.3rem;
+            color: #6d8cc0;
+            margin-bottom: 20px;
         }
 
         .game-info {
@@ -277,29 +310,6 @@
 
         .moves, .timer {
             color: #4a6fa5;
-        }
-
-        .congrats-message {
-            display: none;
-            margin-top: 30px;
-            padding: 25px;
-            background-color: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        .congrats-message h2 {
-            color: #4a6fa5;
-            font-size: 2rem;
-            margin-bottom: 15px;
-            text-shadow: 1px 1px 0 #ffb6c1;
-        }
-
-        .congrats-message p {
-            font-size: 1.3rem;
-            color: #6d8cc0;
-            margin-bottom: 20px;
         }
 
         .confetti {
@@ -323,21 +333,47 @@
             border-radius: 10px;
         }
 
-        .hint-btn {
+        .btn {
             background-color: #a8d8ea;
             color: white;
             border: none;
+            padding: 12px 25px;
             border-radius: 50px;
-            padding: 10px 20px;
-            font-size: 1rem;
             font-family: 'Chewy', cursive;
+            font-size: 1.1rem;
             cursor: pointer;
-            margin-top: 15px;
-            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            margin: 5px;
         }
 
-        .hint-btn:hover {
+        .btn:hover {
             background-color: #8bcae6;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .heart {
+            position: absolute;
+            pointer-events: none;
+            opacity: 0;
+            animation: floatHeart 3s ease-in-out forwards;
+            font-size: 20px;
+        }
+
+        @keyframes floatHeart {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(20deg);
+                opacity: 0;
+            }
         }
 
         /* Responsive adjustments */
@@ -350,9 +386,9 @@
                 font-size: 1.8rem;
             }
             
-            .puzzle-grid {
-                width: 250px;
-                height: 250px;
+            .puzzle-board {
+                height: 350px;
+                max-width: 350px;
             }
             
             .header {
@@ -365,9 +401,9 @@
         }
 
         @media (max-width: 400px) {
-            .puzzle-grid {
-                width: 200px;
-                height: 200px;
+            .puzzle-board {
+                height: 300px;
+                max-width: 300px;
             }
             
             .game-info {
@@ -414,29 +450,22 @@
         </div>
         
         <div class="puzzle-container">
-            <div class="puzzle-grid" id="puzzleGrid">
-                <!-- Puzzle pieces will be generated here -->
+            <div class="puzzle-board" id="puzzleBoard"></div>
+            <div class="completion-message" id="completionMessage">
+                <h2>You complete the missing piece of my day!</h2>
+                <p>You solved the puzzle in <span id="finalTime">0</span> seconds with <span id="finalMoves">0</span> moves!</p>
+                <button class="btn" id="replayBtn">Play Again</button>
             </div>
-            
-            <div class="game-info">
-                <div class="moves">Moves: <span id="moveCount">0</span></div>
-                <div class="timer">Time: <span id="timer">0</span>s</div>
-            </div>
-            
-            <button class="hint-btn" id="hintButton">
-                <i class="fas fa-lightbulb"></i> Show Hint
-            </button>
         </div>
         
-        <div class="congrats-message" id="congratsMessage">
-            <h2>Congratulations!</h2>
-            <p>You solved the puzzle in <span id="finalTime">0</span> seconds with <span id="finalMoves">0</span> moves!</p>
-            <p>You're amazing!</p>
+        <div class="game-info">
+            <div class="moves">Moves: <span id="currentMoves">0</span></div>
+            <div class="timer">Time: <span id="timer">0</span>s</div>
         </div>
     </div>
 
     <!-- Watermark -->
-    <div class="watermark">created by @foocl</div>
+    <div class="watermark">created by @foocl on telegram</div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -445,28 +474,29 @@
             const passwordInput = document.getElementById('passwordInput');
             const submitPassword = document.getElementById('submitPassword');
             const errorMessage = document.getElementById('errorMessage');
-            const puzzleGrid = document.getElementById('puzzleGrid');
-            const congratsMessage = document.getElementById('congratsMessage');
+            const puzzleBoard = document.getElementById('puzzleBoard');
+            const completionMessage = document.getElementById('completionMessage');
             const userName = document.getElementById('userName');
             const notificationName = document.getElementById('notificationName');
             const congratsName = document.getElementById('congratsName');
             const passwordNotification = document.getElementById('passwordNotification');
             const congratsNotification = document.getElementById('congratsNotification');
-            const moveCount = document.getElementById('moveCount');
-            const timer = document.getElementById('timer');
+            const currentMovesDisplay = document.getElementById('currentMoves');
+            const timerDisplay = document.getElementById('timer');
             const finalTime = document.getElementById('finalTime');
             const finalMoves = document.getElementById('finalMoves');
-            const hintButton = document.getElementById('hintButton');
+            const replayBtn = document.getElementById('replayBtn');
             
-            // Game state
-            let moves = 0;
+            // Game variables
+            let pieces = [];
+            let correctPieces = 0;
+            let moveCount = 0;
             let seconds = 0;
             let timerInterval;
             let isGameActive = false;
-            let draggedPiece = null;
-            let startX, startY;
-            let piecePositions = [];
-            
+            let pieceWidth, pieceHeight;
+            let boardWidth, boardHeight;
+
             // Correct password
             const correctPassword = "carteng";
             
@@ -502,304 +532,259 @@
                     submitPassword.click();
                 }
             });
-            
-            // Initialize the puzzle game
+
+            // Initialize the puzzle
             function initPuzzle() {
-                // Create puzzle pieces (8 pieces + 1 empty)
-                const puzzlePieces = [1, 2, 3, 4, 5, 6, 7, 8, 0]; // 0 represents empty
-                
-                // Shuffle the pieces
-                shuffleArray(puzzlePieces);
-                
-                // Clear the puzzle grid
-                puzzleGrid.innerHTML = '';
-                piecePositions = [];
-                
-                // Create puzzle pieces in the grid
-                puzzlePieces.forEach((piece, index) => {
-                    const pieceElement = document.createElement('div');
-                    pieceElement.className = piece === 0 ? 'puzzle-piece empty' : 'puzzle-piece';
-                    pieceElement.dataset.value = piece.toString();
-                    pieceElement.dataset.index = index;
-                    
-                    if (piece !== 0) {
-                        // Create canvas for the puzzle piece
-                        const canvas = document.createElement('canvas');
-                        const ctx = canvas.getContext('2d');
-                        
-                        // Load the snoopy image and slice it
-                        const img = new Image();
-                        img.onload = function() {
-                            const pieceSize = 100; // Each piece is 100x100
-                            const row = Math.floor((piece - 1) / 3);
-                            const col = (piece - 1) % 3;
-                            
-                            canvas.width = pieceSize;
-                            canvas.height = pieceSize;
-                            
-                            // Draw the specific piece from the original image
-                            ctx.drawImage(
-                                img,
-                                col * (img.width / 3),
-                                row * (img.height / 3),
-                                img.width / 3,
-                                img.height / 3,
-                                0,
-                                0,
-                                pieceSize,
-                                pieceSize
-                            );
-                            
-                            // Convert canvas to image
-                            const pieceImg = new Image();
-                            pieceImg.src = canvas.toDataURL();
-                            pieceImg.style.width = '100%';
-                            pieceImg.style.height = '100%';
-                            pieceImg.draggable = false;
-                            pieceElement.appendChild(pieceImg);
-                        };
-                        img.src = 'snoopy.jpg';
-                        
-                        // Add drag events for touch devices
-                        pieceElement.addEventListener('touchstart', handleTouchStart, { passive: false });
-                        pieceElement.addEventListener('touchmove', handleTouchMove, { passive: false });
-                        pieceElement.addEventListener('touchend', handleTouchEnd);
-                        
-                        // Add drag events for mouse
-                        pieceElement.addEventListener('mousedown', handleMouseDown);
-                    }
-                    
-                    puzzleGrid.appendChild(pieceElement);
-                    piecePositions[index] = piece;
-                });
-                
-                moves = 0;
-                moveCount.textContent = moves;
+                // Reset game state
+                puzzleBoard.innerHTML = '';
+                pieces = [];
+                correctPieces = 0;
+                moveCount = 0;
+                currentMovesDisplay.textContent = '0';
+                completionMessage.style.display = 'none';
                 isGameActive = true;
+                
+                // Get board dimensions
+                boardWidth = puzzleBoard.offsetWidth;
+                boardHeight = puzzleBoard.offsetHeight;
+                
+                // Calculate piece dimensions
+                pieceWidth = boardWidth / 3;
+                pieceHeight = boardHeight / 3;
+
+                // Create puzzle pieces
+                createPuzzlePieces();
+                
+                // Shuffle pieces
+                shufflePieces();
             }
-            
-            // Touch event handlers
-            function handleTouchStart(e) {
-                if (!isGameActive || e.target.classList.contains('empty')) return;
+
+            // Create puzzle pieces from snoopy.jpg
+            function createPuzzlePieces() {
+                const imageUrl = 'snoopy.jpg';
                 
-                e.preventDefault();
-                const touch = e.touches[0];
-                draggedPiece = e.currentTarget;
-                draggedPiece.classList.add('dragging');
-                
-                // Store initial touch position
-                startX = touch.clientX;
-                startY = touch.clientY;
-            }
-            
-            function handleTouchMove(e) {
-                if (!draggedPiece) return;
-                
-                e.preventDefault();
-                const touch = e.touches[0];
-                
-                // Calculate movement
-                const deltaX = touch.clientX - startX;
-                const deltaY = touch.clientY - startY;
-                
-                // Update position for visual feedback
-                draggedPiece.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(1.05)`;
-            }
-            
-            function handleTouchEnd(e) {
-                if (!draggedPiece) return;
-                
-                // Reset transform
-                draggedPiece.style.transform = '';
-                draggedPiece.classList.remove('dragging');
-                
-                // Find the empty piece
-                const emptyPiece = document.querySelector('.puzzle-piece.empty');
-                
-                // Check if the dragged piece is adjacent to the empty piece
-                if (isAdjacent(draggedPiece, emptyPiece)) {
-                    swapPieces(draggedPiece, emptyPiece);
-                    moves++;
-                    moveCount.textContent = moves;
-                    checkPuzzleSolved();
-                }
-                
-                draggedPiece = null;
-            }
-            
-            // Mouse event handlers
-            function handleMouseDown(e) {
-                if (!isGameActive || e.target.classList.contains('empty')) return;
-                
-                draggedPiece = e.currentTarget;
-                draggedPiece.classList.add('dragging');
-                
-                // Store initial mouse position
-                startX = e.clientX;
-                startY = e.clientY;
-                
-                // Add global mouse event listeners
-                document.addEventListener('mousemove', handleMouseMove);
-                document.addEventListener('mouseup', handleMouseUp);
-            }
-            
-            function handleMouseMove(e) {
-                if (!draggedPiece) return;
-                
-                // Calculate movement
-                const deltaX = e.clientX - startX;
-                const deltaY = e.clientY - startY;
-                
-                // Update position for visual feedback
-                draggedPiece.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(1.05)`;
-            }
-            
-            function handleMouseUp(e) {
-                if (!draggedPiece) return;
-                
-                // Remove global mouse event listeners
-                document.removeEventListener('mousemove', handleMouseMove);
-                document.removeEventListener('mouseup', handleMouseUp);
-                
-                // Reset transform
-                draggedPiece.style.transform = '';
-                draggedPiece.classList.remove('dragging');
-                
-                // Find the empty piece
-                const emptyPiece = document.querySelector('.puzzle-piece.empty');
-                
-                // Check if the dragged piece is adjacent to the empty piece
-                if (isAdjacent(draggedPiece, emptyPiece)) {
-                    swapPieces(draggedPiece, emptyPiece);
-                    moves++;
-                    moveCount.textContent = moves;
-                    checkPuzzleSolved();
-                }
-                
-                draggedPiece = null;
-            }
-            
-            // Check if two pieces are adjacent
-            function isAdjacent(piece1, piece2) {
-                const index1 = parseInt(piece1.dataset.index);
-                const index2 = parseInt(piece2.dataset.index);
-                
-                const row1 = Math.floor(index1 / 3);
-                const col1 = index1 % 3;
-                const row2 = Math.floor(index2 / 3);
-                const col2 = index2 % 3;
-                
-                return (Math.abs(row1 - row2) === 1 && col1 === col2) ||
-                       (Math.abs(col1 - col2) === 1 && row1 === row2);
-            }
-            
-            // Swap two puzzle pieces
-            function swapPieces(piece1, piece2) {
-                // Swap data values and indices
-                const tempValue = piece1.dataset.value;
-                const tempIndex = piece1.dataset.index;
-                
-                piece1.dataset.value = piece2.dataset.value;
-                piece1.dataset.index = piece2.dataset.index;
-                piece2.dataset.value = tempValue;
-                piece2.dataset.index = tempIndex;
-                
-                // Update positions array
-                piecePositions[piece1.dataset.index] = parseInt(piece1.dataset.value);
-                piecePositions[piece2.dataset.index] = parseInt(piece2.dataset.value);
-                
-                // Swap classes
-                if (piece1.dataset.value === '0') {
-                    piece1.className = 'puzzle-piece empty';
-                    piece1.innerHTML = '';
-                    
-                    // Remove event listeners
-                    piece1.removeEventListener('touchstart', handleTouchStart);
-                    piece1.removeEventListener('touchmove', handleTouchMove);
-                    piece1.removeEventListener('touchend', handleTouchEnd);
-                    piece1.removeEventListener('mousedown', handleMouseDown);
-                } else {
-                    piece1.className = 'puzzle-piece';
-                    
-                    // Add event listeners back
-                    piece1.addEventListener('touchstart', handleTouchStart, { passive: false });
-                    piece1.addEventListener('touchmove', handleTouchMove, { passive: false });
-                    piece1.addEventListener('touchend', handleTouchEnd);
-                    piece1.addEventListener('mousedown', handleMouseDown);
-                }
-                
-                if (piece2.dataset.value === '0') {
-                    piece2.className = 'puzzle-piece empty';
-                    piece2.innerHTML = '';
-                    
-                    // Remove event listeners
-                    piece2.removeEventListener('touchstart', handleTouchStart);
-                    piece2.removeEventListener('touchmove', handleTouchMove);
-                    piece2.removeEventListener('touchend', handleTouchEnd);
-                    piece2.removeEventListener('mousedown', handleMouseDown);
-                } else {
-                    piece2.className = 'puzzle-piece';
-                    
-                    // Add event listeners back
-                    piece2.addEventListener('touchstart', handleTouchStart, { passive: false });
-                    piece2.addEventListener('touchmove', handleTouchMove, { passive: false });
-                    piece2.addEventListener('touchend', handleTouchEnd);
-                    piece2.addEventListener('mousedown', handleMouseDown);
-                }
-            }
-            
-            // Check if puzzle is solved
-            function checkPuzzleSolved() {
-                let solved = true;
-                
-                for (let i = 0; i < piecePositions.length - 1; i++) {
-                    if (piecePositions[i] !== i + 1) {
-                        solved = false;
-                        break;
+                for (let row = 0; row < 3; row++) {
+                    for (let col = 0; col < 3; col++) {
+                        const piece = document.createElement('div');
+                        piece.className = 'puzzle-piece';
+                        piece.dataset.row = row;
+                        piece.dataset.col = col;
+                        piece.dataset.correct = false;
+                        
+                        // Position and size
+                        piece.style.width = `${pieceWidth}px`;
+                        piece.style.height = `${pieceHeight}px`;
+                        
+                        // Background image positioning for the sliced piece
+                        const bgPosX = -col * pieceWidth;
+                        const bgPosY = -row * pieceHeight;
+                        piece.style.backgroundImage = `url(${imageUrl})`;
+                        piece.style.backgroundPosition = `${bgPosX}px ${bgPosY}px`;
+                        piece.style.backgroundSize = `${boardWidth}px ${boardHeight}px`;
+                        
+                        // Correct position (for snapping)
+                        piece.dataset.correctX = col * pieceWidth;
+                        piece.dataset.correctY = row * pieceHeight;
+                        
+                        // Add drag events
+                        addDragEvents(piece);
+                        
+                        puzzleBoard.appendChild(piece);
+                        pieces.push(piece);
                     }
                 }
-                
-                // Last piece should be empty
-                if (piecePositions[piecePositions.length - 1] !== 0) {
-                    solved = false;
+            }
+
+            // Shuffle pieces
+            function shufflePieces() {
+                pieces.forEach(piece => {
+                    piece.style.left = `${Math.random() * (boardWidth - pieceWidth)}px`;
+                    piece.style.top = `${Math.random() * (boardHeight - pieceHeight)}px`;
+                    piece.classList.remove('correct');
+                    piece.dataset.correct = 'false';
+                });
+                correctPieces = 0;
+            }
+
+            // Add drag events to a piece
+            function addDragEvents(piece) {
+                let isDragging = false;
+                let offsetX, offsetY;
+                let startX, startY;
+
+                piece.addEventListener('mousedown', startDrag);
+                piece.addEventListener('touchstart', startDrag, { passive: false });
+
+                function startDrag(e) {
+                    if (piece.dataset.correct === 'true' || !isGameActive) return;
+                    
+                    e.preventDefault();
+                    isDragging = true;
+                    piece.classList.add('dragging');
+                    
+                    // Get initial position
+                    const rect = piece.getBoundingClientRect();
+                    
+                    // Calculate offset
+                    if (e.type === 'mousedown') {
+                        offsetX = e.clientX - rect.left;
+                        offsetY = e.clientY - rect.top;
+                    } else {
+                        offsetX = e.touches[0].clientX - rect.left;
+                        offsetY = e.touches[0].clientY - rect.top;
+                    }
+                    
+                    // Save start position
+                    startX = parseFloat(piece.style.left);
+                    startY = parseFloat(piece.style.top);
+                    
+                    // Bring to front
+                    piece.style.zIndex = '100';
+                    
+                    // Add move and end events
+                    document.addEventListener('mousemove', dragPiece);
+                    document.addEventListener('touchmove', dragPiece, { passive: false });
+                    document.addEventListener('mouseup', endDrag);
+                    document.addEventListener('touchend', endDrag);
                 }
+
+                function dragPiece(e) {
+                    if (!isDragging) return;
+                    e.preventDefault();
+                    
+                    let clientX, clientY;
+                    
+                    if (e.type === 'mousemove') {
+                        clientX = e.clientX;
+                        clientY = e.clientY;
+                    } else {
+                        clientX = e.touches[0].clientX;
+                        clientY = e.touches[0].clientY;
+                    }
+                    
+                    // Calculate new position
+                    const boardRect = puzzleBoard.getBoundingClientRect();
+                    let newLeft = clientX - boardRect.left - offsetX;
+                    let newTop = clientY - boardRect.top - offsetY;
+                    
+                    // Constrain to board
+                    newLeft = Math.max(0, Math.min(newLeft, boardRect.width - pieceWidth));
+                    newTop = Math.max(0, Math.min(newTop, boardRect.height - pieceHeight));
+                    
+                    piece.style.left = `${newLeft}px`;
+                    piece.style.top = `${newTop}px`;
+                }
+
+                function endDrag(e) {
+                    if (!isDragging) return;
+                    isDragging = false;
+                    piece.classList.remove('dragging');
+                    
+                    // Remove event listeners
+                    document.removeEventListener('mousemove', dragPiece);
+                    document.removeEventListener('touchmove', dragPiece);
+                    document.removeEventListener('mouseup', endDrag);
+                    document.removeEventListener('touchend', endDrag);
+                    
+                    // Check if piece is in correct position
+                    checkCorrectPosition(piece);
+                    
+                    // Reset z-index
+                    piece.style.zIndex = '1';
+                    
+                    // Count the move if position changed
+                    const currentX = parseFloat(piece.style.left);
+                    const currentY = parseFloat(piece.style.top);
+                    if (Math.abs(currentX - startX) > 5 || Math.abs(currentY - startY) > 5) {
+                        moveCount++;
+                        currentMovesDisplay.textContent = moveCount;
+                    }
+                }
+
+                // Touch event handlers
+                piece.addEventListener('touchmove', function(e) {
+                    if (isDragging) e.preventDefault();
+                }, { passive: false });
+            }
+
+            // Check if piece is in correct position
+            function checkCorrectPosition(piece) {
+                if (piece.dataset.correct === 'true') return;
                 
-                if (solved) {
-                    isGameActive = false;
-                    clearInterval(timerInterval);
+                const correctX = parseFloat(piece.dataset.correctX);
+                const correctY = parseFloat(piece.dataset.correctY);
+                const currentX = parseFloat(piece.style.left);
+                const currentY = parseFloat(piece.style.top);
+                
+                // Check if close enough to correct position
+                const threshold = 20;
+                if (Math.abs(currentX - correctX) < threshold && 
+                    Math.abs(currentY - correctY) < threshold) {
                     
-                    // Update final stats
-                    finalTime.textContent = seconds;
-                    finalMoves.textContent = moves;
+                    // Snap to correct position
+                    piece.style.left = `${correctX}px`;
+                    piece.style.top = `${correctY}px`;
+                    piece.classList.add('correct');
+                    piece.dataset.correct = 'true';
                     
-                    // Show congrats message
-                    congratsMessage.style.display = 'block';
-                    
-                    // Show notification
-                    congratsName.textContent = "Friend";
-                    congratsNotification.classList.add('show');
-                    
-                    // Create confetti
-                    createConfetti();
+                    // Check if puzzle is complete
+                    correctPieces++;
+                    if (correctPieces === 9) {
+                        showCompletion();
+                    }
                 }
             }
-            
-            // Timer functionality
-            function startTimer() {
-                seconds = 0;
-                timer.textContent = seconds;
-                timerInterval = setInterval(() => {
-                    seconds++;
-                    timer.textContent = seconds;
-                }, 1000);
+
+            // Show completion message and animation
+            function showCompletion() {
+                isGameActive = false;
+                clearInterval(timerInterval);
+                
+                completionMessage.style.display = 'flex';
+                finalTime.textContent = seconds;
+                finalMoves.textContent = moveCount;
+                
+                // Show notification
+                congratsName.textContent = "Friend";
+                congratsNotification.classList.add('show');
+                
+                // Create heart animation
+                for (let i = 0; i < 20; i++) {
+                    setTimeout(() => {
+                        createHeart();
+                    }, i * 150);
+                }
+                
+                // Create confetti
+                createConfetti();
             }
-            
+
+            // Create floating heart
+            function createHeart() {
+                const heart = document.createElement('div');
+                heart.innerHTML = '💙';
+                heart.className = 'heart';
+                
+                // Random position
+                const left = Math.random() * 100;
+                heart.style.left = `${left}%`;
+                heart.style.bottom = '0';
+                heart.style.fontSize = `${Math.random() * 20 + 15}px`;
+                
+                puzzleBoard.appendChild(heart);
+                
+                // Remove after animation
+                setTimeout(() => {
+                    heart.remove();
+                }, 3000);
+            }
+
             // Confetti effect
             function createConfetti() {
                 const colors = ['#ffb6c1', '#a8d8ea', '#c5e3f6', '#ffeb3b', '#4a6fa5'];
                 const container = document.body;
                 
-                for (let i = 0; i < 100; i++) {
+                for (let i = 0; i < 50; i++) {
                     const confetti = document.createElement('div');
                     confetti.className = 'confetti';
                     confetti.style.left = Math.random() * 100 + 'vw';
@@ -822,16 +807,24 @@
                     };
                 }
             }
-            
-            // Shuffle array function
-            function shuffleArray(array) {
-                for (let i = array.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [array[i], array[j]] = [array[j], array[i]];
-                }
-                return array;
+
+            // Timer functionality
+            function startTimer() {
+                seconds = 0;
+                timerDisplay.textContent = seconds;
+                timerInterval = setInterval(() => {
+                    seconds++;
+                    timerDisplay.textContent = seconds;
+                }, 1000);
             }
-            
+
+            // Replay button
+            replayBtn.addEventListener('click', function() {
+                congratsNotification.classList.remove('show');
+                initPuzzle();
+                startTimer();
+            });
+
             // Initialize the page
             passwordInput.focus();
         });
