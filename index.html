@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special Gift For You</title>
+    <link href="https://fonts.googleapis.com/css2?family=Chewy&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Chewy', cursive;
+            background: url('blue.jpg') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #4a6fa5;
+            overflow-x: hidden;
+            position: relative;
+            padding: 20px;
+        }
+
+        /* Snoopy floating icons */
+        .snoopy-bg {
+            position: fixed;
+            z-index: -1;
+            opacity: 0.7;
+            animation: float 6s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .snoopy-1 {
+            width: 80px;
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+
+        .snoopy-2 {
+            width: 100px;
+            top: 70%;
+            left: 85%;
+            animation-delay: 2s;
+        }
+
+        .snoopy-3 {
+            width: 60px;
+            top: 40%;
+            left: 90%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: transform 0.5s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 3px solid #ffb6c1;
+        }
+
+        .notification.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .notification i {
+            color: #ffb6c1;
+            font-size: 1.5rem;
+        }
+
+        .notification p {
+            font-size: 1.2rem;
+            color: #4a6fa5;
+        }
+
+        /* Password Screen */
+        .password-screen {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            border: 5px dashed #ffb6c1;
+            position: relative;
+            z-index: 10;
+        }
+
+        .password-screen h1 {
+            color: #4a6fa5;
+            margin-bottom: 20px;
+            font-size: 2.2rem;
+            text-shadow: 2px 2px 0 #ffb6c1;
+        }
+
+        .password-screen p {
+            margin-bottom: 30px;
+            font-size: 1.2rem;
+            color: #6d8cc0;
+        }
+
+        .password-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .password-input {
+            padding: 15px;
+            border: 3px solid #a8d8ea;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-family: 'Chewy', cursive;
+            text-align: center;
+            width: 100%;
+            color: #4a6fa5;
+            background-color: #f0f9ff;
+        }
+
+        .password-input:focus {
+            outline: none;
+            border-color: #ffb6c1;
+            box-shadow: 0 0 10px rgba(255, 182, 193, 0.5);
+        }
+
+        .submit-btn {
+            background-color: #ffb6c1;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 15px 40px;
+            font-size: 1.3rem;
+            font-family: 'Chewy', cursive;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 0 #e0a4af;
+            width: 100%;
+            max-width: 200px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 0 #e0a4af;
+        }
+
+        .submit-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 3px 0 #e0a4af;
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            margin-top: 10px;
+            font-size: 1rem;
+            display: none;
+        }
+
+        /* Puzzle Screen */
+        .puzzle-screen {
+            display: none;
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .header h1 {
+            color: #4a6fa5;
+            font-size: 2rem;
+            text-shadow: 2px 2px 0 #ffb6c1;
+        }
+
+        .header img {
+            width: 50px;
+            height: auto;
+        }
+
+        .puzzle-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 25px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .puzzle-image-container {
+            width: 300px;
+            height: 300px;
+            margin: 0 auto 20px;
+            border: 3px solid #a8d8ea;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .puzzle-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            margin: 0 auto;
+            max-width: 300px;
+            border: 3px solid #a8d8ea;
+            border-radius: 15px;
+            padding: 10px;
+            background: rgba(168, 216, 234, 0.2);
+        }
+
+        .puzzle-piece {
+            width: 100%;
+            aspect-ratio: 1;
+            background-color: #e0f7ff;
+            border: 2px solid #a8d8ea;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .puzzle-piece img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .puzzle-piece:hover {
+            transform: scale(1.05);
+            border-color: #ffb6c1;
+        }
+
+        .puzzle-piece.empty {
+            background-color: transparent;
+            border: 2px dashed #a8d8ea;
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            font-size: 1.2rem;
+        }
+
+        .moves, .timer {
+            color: #4a6fa5;
+        }
+
+        .congrats-message {
+            display: none;
+            margin-top: 30px;
+            padding: 25px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .congrats-message h2 {
+            color: #4a6fa5;
+            font-size: 2rem;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 0 #ffb6c1;
+        }
+
+        .congrats-message p {
+            font-size: 1.3rem;
+            color: #6d8cc0;
+            margin-bottom: 20px;
+        }
+
+        .confetti {
+            position: fixed;
+            width: 15px;
+            height: 15px;
+            background-color: #ffb6c1;
+            opacity: 0;
+            z-index: 999;
+        }
+
+        .watermark {
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+            font-size: 0.9rem;
+            color: rgba(106, 142, 194, 0.8);
+            z-index: 10;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 5px 10px;
+            border-radius: 10px;
+        }
+
+        .hint-btn {
+            background-color: #a8d8ea;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-family: 'Chewy', cursive;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .hint-btn:hover {
+            background-color: #8bcae6;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .password-screen, .puzzle-container {
+                padding: 20px;
+            }
+            
+            .password-screen h1, .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .puzzle-image-container,
+            .puzzle-grid {
+                width: 250px;
+                height: 250px;
+            }
+            
+            .header {
+                flex-direction: column;
+            }
+            
+            .snoopy-bg {
+                width: 50px !important;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .puzzle-image-container,
+            .puzzle-grid {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .game-info {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Snoopy floating icons -->
+    <img src="sno1.png" class="snoopy-bg snoopy-1" alt="Snoopy">
+    <img src="sno2.png" class="snoopy-bg snoopy-2" alt="Snoopy">
+    <img src="sno3.png" class="snoopy-bg snoopy-3" alt="Snoopy">
+
+    <!-- Notifications -->
+    <div class="notification" id="passwordNotification">
+        <i class="fas fa-lock-open"></i>
+        <p>This website is just for you, <span id="notificationName">Friend</span>!</p>
+    </div>
+
+    <div class="notification" id="congratsNotification">
+        <i class="fas fa-trophy"></i>
+        <p>Congrats <span id="congratsName">Friend</span>, you made it!</p>
+    </div>
+
+    <!-- Password Screen -->
+    <div class="password-screen" id="passwordScreen">
+        <h1>Special Gift</h1>
+        <p>Enter the password to reveal your surprise!</p>
+        <div class="password-form">
+            <input type="password" class="password-input" id="passwordInput" placeholder="Enter password...">
+            <button class="submit-btn" id="submitPassword">Open Gift</button>
+            <div class="error-message" id="errorMessage">Incorrect password. Please try again.</div>
+        </div>
+    </div>
+
+    <!-- Puzzle Screen -->
+    <div class="puzzle-screen" id="puzzleScreen">
+        <div class="header">
+            <h1>Hey <span id="userName">Friend</span>, this website is for you!</h1>
+            <img src="sno4.png" alt="Snoopy">
+        </div>
+        
+        <div class="puzzle-container">
+            <div class="puzzle-image-container">
+                <img src="snoopy.jpg" alt="Complete Snoopy Puzzle" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            
+            <div class="puzzle-grid" id="puzzleGrid">
+                <!-- Puzzle pieces will be generated here -->
+            </div>
+            
+            <div class="game-info">
+                <div class="moves">Moves: <span id="moveCount">0</span></div>
+                <div class="timer">Time: <span id="timer">0</span>s</div>
+            </div>
+            
+            <button class="hint-btn" id="hintButton">
+                <i class="fas fa-lightbulb"></i> Show Hint
+            </button>
+        </div>
+        
+        <div class="congrats-message" id="congratsMessage">
+            <h2>Congratulations!</h2>
+            <p>You solved the puzzle in <span id="finalTime">0</span> seconds with <span id="finalMoves">0</span> moves!</p>
+            <p>You're amazing!</p>
+        </div>
+    </div>
+
+    <!-- Watermark -->
+    <div class="watermark">created by @foocl</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordScreen = document.getElementById('passwordScreen');
+            const puzzleScreen = document.getElementById('puzzleScreen');
+            const passwordInput = document.getElementById('passwordInput');
+            const submitPassword = document.getElementById('submitPassword');
+            const errorMessage = document.getElementById('errorMessage');
+            const puzzleGrid = document.getElementById('puzzleGrid');
+            const congratsMessage = document.getElementById('congratsMessage');
+            const userName = document.getElementById('userName');
+            const notificationName = document.getElementById('notificationName');
+            const congratsName = document.getElementById('congratsName');
+            const passwordNotification = document.getElementById('passwordNotification');
+            const congratsNotification = document.getElementById('congratsNotification');
+            const moveCount = document.getElementById('moveCount');
+            const timer = document.getElementById('timer');
+            const finalTime = document.getElementById('finalTime');
+            const finalMoves = document.getElementById('finalMoves');
+            const hintButton = document.getElementById('hintButton');
+            
+            // Game state
+            let moves = 0;
+            let seconds = 0;
+            let timerInterval;
+            let isGameActive = false;
+            
+            // Correct password
+            const correctPassword = "carteng";
+            
+            // Handle password submission
+            submitPassword.addEventListener('click', function() {
+                if (passwordInput.value.toLowerCase() === correctPassword) {
+                    // Show notification
+                    notificationName.textContent = "Friend";
+                    passwordNotification.classList.add('show');
+                    
+                    // Hide notification after 3 seconds
+                    setTimeout(() => {
+                        passwordNotification.classList.remove('show');
+                    }, 3000);
+                    
+                    // Transition to puzzle screen
+                    setTimeout(() => {
+                        passwordScreen.style.display = 'none';
+                        puzzleScreen.style.display = 'block';
+                        initPuzzle();
+                        startTimer();
+                    }, 1000);
+                } else {
+                    errorMessage.style.display = 'block';
+                    passwordInput.value = '';
+                    passwordInput.focus();
+                }
+            });
+            
+            // Allow Enter key to submit password
+            passwordInput.addEventListener('keyup', function(event) {
+                if (event.key === 'Enter') {
+                    submitPassword.click();
+                }
+            });
+            
+            // Initialize the puzzle game
+            function initPuzzle() {
+                // Create puzzle pieces (8 pieces + 1 empty)
+                const puzzlePieces = [1, 2, 3, 4, 5, 6, 7, 8, 0]; // 0 represents empty
+                
+                // Shuffle the pieces
+                shuffleArray(puzzlePieces);
+                
+                // Clear the puzzle grid
+                puzzleGrid.innerHTML = '';
+                
+                // Create puzzle pieces in the grid
+                puzzlePieces.forEach((piece, index) => {
+                    const pieceElement = document.createElement('div');
+                    
+                    if (piece === 0) {
+                        pieceElement.className = 'puzzle-piece empty';
+                        pieceElement.dataset.value = '0';
+                    } else {
+                        pieceElement.className = 'puzzle-piece';
+                        pieceElement.dataset.value = piece.toString();
+                        
+                        // Create image for puzzle piece
+                        const img = document.createElement('img');
+                        img.src = `snoopy-puzzle-${piece}.jpg`; // You'll need to create these sliced images
+                        img.alt = `Puzzle piece ${piece}`;
+                        img.draggable = false;
+                        pieceElement.appendChild(img);
+                        
+                        // Add click event
+                        pieceElement.addEventListener('click', function() {
+                            movePiece(this);
+                        });
+                    }
+                    
+                    pieceElement.dataset.index = index;
+                    puzzleGrid.appendChild(pieceElement);
+                });
+                
+                moves = 0;
+                moveCount.textContent = moves;
+                isGameActive = true;
+            }
+            
+            // Move puzzle piece when clicked/tapped
+            function movePiece(piece) {
+                if (!isGameActive) return;
+                
+                const emptyPiece = document.querySelector('.puzzle-piece.empty');
+                const pieceIndex = parseInt(piece.dataset.index);
+                const emptyIndex = parseInt(emptyPiece.dataset.index);
+                
+                // Check if the piece is adjacent to the empty space
+                if (isAdjacent(pieceIndex, emptyIndex)) {
+                    // Swap the piece with the empty space
+                    swapPieces(piece, emptyPiece);
+                    moves++;
+                    moveCount.textContent = moves;
+                    checkPuzzleSolved();
+                }
+            }
+            
+            // Check if two pieces are adjacent
+            function isAdjacent(index1, index2) {
+                const row1 = Math.floor(index1 / 3);
+                const col1 = index1 % 3;
+                const row2 = Math.floor(index2 / 3);
+                const col2 = index2 % 3;
+                
+                return (Math.abs(row1 - row2) === 1 && col1 === col2) ||
+                       (Math.abs(col1 - col2) === 1 && row1 === row2);
+            }
+            
+            // Swap two puzzle pieces
+            function swapPieces(piece1, piece2) {
+                // Swap data values
+                const tempValue = piece1.dataset.value;
+                const tempIndex = piece1.dataset.index;
+                
+                piece1.dataset.value = piece2.dataset.value;
+                piece1.dataset.index = piece2.dataset.index;
+                piece2.dataset.value = tempValue;
+                piece2.dataset.index = tempIndex;
+                
+                // Swap classes
+                if (piece1.dataset.value === '0') {
+                    piece1.className = 'puzzle-piece empty';
+                    piece1.innerHTML = '';
+                } else {
+                    piece1.className = 'puzzle-piece';
+                    const img = document.createElement('img');
+                    img.src = `snoopy-puzzle-${piece1.dataset.value}.jpg`;
+                    img.alt = `Puzzle piece ${piece1.dataset.value}`;
+                    img.draggable = false;
+                    piece1.innerHTML = '';
+                    piece1.appendChild(img);
+                    
+                    // Add click event to the new non-empty piece
+                    piece1.addEventListener('click', function() {
+                        movePiece(this);
+                    });
+                }
+                
+                if (piece2.dataset.value === '0') {
+                    piece2.className = 'puzzle-piece empty';
+                    piece2.innerHTML = '';
+                } else {
+                    piece2.className = 'puzzle-piece';
+                    const img = document.createElement('img');
+                    img.src = `snoopy-puzzle-${piece2.dataset.value}.jpg`;
+                    img.alt = `Puzzle piece ${piece2.dataset.value}`;
+                    img.draggable = false;
+                    piece2.innerHTML = '';
+                    piece2.appendChild(img);
+                    
+                    // Add click event to the new non-empty piece
+                    piece2.addEventListener('click', function() {
+                        movePiece(this);
+                    });
+                }
+            }
+            
+            // Hint functionality
+            hintButton.addEventListener('click', function() {
+                // Find the empty piece
+                const emptyPiece = document.querySelector('.puzzle-piece.empty');
+                const emptyIndex = parseInt(emptyPiece.dataset.index);
+                
+                // Find adjacent pieces that can move
+                const adjacentPieces = [];
+                const pieces = Array.from(puzzleGrid.children);
+                
+                pieces.forEach(piece => {
+                    if (piece.dataset.value !== '0') {
+                        const pieceIndex = parseInt(piece.dataset.index);
+                        if (isAdjacent(pieceIndex, emptyIndex)) {
+                            adjacentPieces.push(piece);
+                        }
+                    }
+                });
+                
+                // Highlight one random adjacent piece
+                if (adjacentPieces.length > 0) {
+                    const randomPiece = adjacentPieces[Math.floor(Math.random() * adjacentPieces.length)];
+                    randomPiece.style.borderColor = '#ffeb3b';
+                    randomPiece.style.boxShadow = '0 0 10px #ffeb3b';
+                    
+                    setTimeout(() => {
+                        randomPiece.style.borderColor = '';
+                        randomPiece.style.boxShadow = '';
+                    }, 1000);
+                }
+            });
+            
+            // Check if puzzle is solved
+            function checkPuzzleSolved() {
+                const pieces = Array.from(puzzleGrid.children);
+                let solved = true;
+                
+                for (let i = 0; i < pieces.length - 1; i++) {
+                    if (parseInt(pieces[i].dataset.value) !== i + 1) {
+                        solved = false;
+                        break;
+                    }
+                }
+                
+                // Last piece should be empty
+                if (parseInt(pieces[pieces.length - 1].dataset.value) !== 0) {
+                    solved = false;
+                }
+                
+                if (solved) {
+                    isGameActive = false;
+                    clearInterval(timerInterval);
+                    
+                    // Update final stats
+                    finalTime.textContent = seconds;
+                    finalMoves.textContent = moves;
+                    
+                    // Show congrats message
+                    congratsMessage.style.display = 'block';
+                    
+                    // Show notification
+                    congratsName.textContent = "Friend";
+                    congratsNotification.classList.add('show');
+                    
+                    // Create confetti
+                    createConfetti();
+                }
+            }
+            
+            // Timer functionality
+            function startTimer() {
+                seconds = 0;
+                timer.textContent = seconds;
+                timerInterval = setInterval(() => {
+                    seconds++;
+                    timer.textContent = seconds;
+                }, 1000);
+            }
+            
+            // Confetti effect
+            function createConfetti() {
+                const colors = ['#ffb6c1', '#a8d8ea', '#c5e3f6', '#ffeb3b', '#4a6fa5'];
+                const container = document.body;
+                
+                for (let i = 0; i < 100; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                    container.appendChild(confetti);
+                    
+                    // Animate confetti
+                    const animation = confetti.animate([
+                        { top: '-10px', opacity: 1, transform: `rotate(0deg)` },
+                        { top: '100vh', opacity: 0, transform: `rotate(${Math.random() * 360}deg)` }
+                    ], {
+                        duration: 2000 + Math.random() * 3000,
+                        easing: 'cubic-bezier(0.1, 0.8, 0.2, 1)'
+                    });
+                    
+                    // Remove confetti after animation
+                    animation.onfinish = () => {
+                        confetti.remove();
+                    };
+                }
+            }
+            
+            // Shuffle array function
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+            
+            // Initialize the page
+            passwordInput.focus();
+        });
+    </script>
+</body>
+</html>
